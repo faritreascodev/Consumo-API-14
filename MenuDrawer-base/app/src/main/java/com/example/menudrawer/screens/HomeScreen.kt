@@ -32,7 +32,6 @@ import com.example.menudrawer.viewmodel.UsersViewModel
 
 @Composable
 fun HomeScreen() {
-  //La IU reacciona automáticamente a estas variables del ViewModel
   val viewModel: UsersViewModel = viewModel();
   val users = viewModel.userList
   val isLoading = viewModel.isLoading

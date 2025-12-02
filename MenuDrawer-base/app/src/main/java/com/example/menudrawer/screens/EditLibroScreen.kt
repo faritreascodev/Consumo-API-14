@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.menudrawer.model.Libro
 import com.example.menudrawer.model.LibroRequest
 import com.example.menudrawer.viewmodel.LibrosViewModel
 import kotlinx.coroutines.launch
@@ -17,13 +16,13 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditLibroScreen(
-    libro: Libro,
+    codLibro: String,
     viewModel: LibrosViewModel = viewModel(),
     onNavigateBack: () -> Unit
 ) {
-    var nombre by remember { mutableStateOf(libro.nombre) }
-    var autor by remember { mutableStateOf(libro.autor) }
-    var precio by remember { mutableStateOf(libro.precio.toString()) }
+    var nombre by remember { mutableStateOf("") }
+    var autor by remember { mutableStateOf("") }
+    var precio by remember { mutableStateOf("") }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -35,19 +34,13 @@ fun EditLibroScreen(
     LaunchedEffect(updateSuccess, updateError) {
         if (updateSuccess == true) {
             scope.launch {
-                snackbarHostState.showSnackbar(
-                    message = "Libro actualizado con éxito!",
-                    duration = SnackbarDuration.Short
-                )
+                snackbarHostState.showSnackbar("Libro actualizado con éxito!")
                 viewModel.resetUpdateState()
                 onNavigateBack()
             }
         } else if (updateError != null) {
             scope.launch {
-                snackbarHostState.showSnackbar(
-                    message = "Error: $updateError",
-                    duration = SnackbarDuration.Long
-                )
+                snackbarHostState.showSnackbar("Error: $updateError")
                 viewModel.resetUpdateState()
             }
         }
@@ -64,15 +57,8 @@ fun EditLibroScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
         ) {
-            Text(
-                text = "Editar Libro",
-                style = MaterialTheme.typography.headlineMedium
-            )
-
-            Text(
-                text = "Código: ${libro.codlibro}",
-                style = MaterialTheme.typography.bodyLarge
-            )
+            Text(text = "Editar Libro", style = MaterialTheme.typography.headlineMedium)
+            Text(text = "Código: $codLibro", style = MaterialTheme.typography.bodyLarge)
 
             OutlinedTextField(
                 value = nombre,
@@ -100,12 +86,12 @@ fun EditLibroScreen(
                 onClick = {
                     val precioDouble = precio.toDoubleOrNull() ?: 0.0
                     val request = LibroRequest(
-                        codlibro = libro.codlibro,
+                        codlibro = codLibro,
                         nombre = nombre,
                         autor = autor,
                         precio = precioDouble
                     )
-                    viewModel.actualizarLibro(libro.codlibro, request)
+                    viewModel.actualizarLibro(codLibro, request)
                 },
                 enabled = !isUpdating,
                 modifier = Modifier

@@ -28,6 +28,7 @@ import com.example.menudrawer.components.AppDrawer
 import com.example.menudrawer.model.MenuItem
 import com.example.menudrawer.screens.CreateLibroScreen
 import com.example.menudrawer.screens.CreateUsuarioScreen
+import com.example.menudrawer.screens.EditLibroScreen
 import com.example.menudrawer.screens.HomeScreen
 import com.example.menudrawer.screens.LibroScreen
 import com.example.menudrawer.screens.ProfileScreen
@@ -57,7 +58,6 @@ fun MainAppScreen() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    // Menú lateral con todas las opciones
     val menuItems = listOf(
         MenuItem.Home,
         MenuItem.Profile,
@@ -96,23 +96,21 @@ fun MainAppScreen() {
 
             NavHost(
                 navController = navController,
-                startDestination = MenuItem.Libros.route, // inicia mostrando libros
+                startDestination = MenuItem.Libros.route,
                 modifier = Modifier.padding(innerPadding)
             ) {
-                composable(MenuItem.Home.route) {
-                    HomeScreen()
-                }
+                composable(MenuItem.Home.route) { HomeScreen() }
 
-                composable(MenuItem.Profile.route) {
-                    ProfileScreen()
-                }
+                composable(MenuItem.Profile.route) { ProfileScreen() }
 
-                composable(MenuItem.Settings.route) {
-                    SettingsScreen()
-                }
+                composable(MenuItem.Settings.route) { SettingsScreen() }
 
                 composable(MenuItem.Libros.route) {
-                    LibroScreen()
+                    LibroScreen(
+                        onEditLibro = { cod ->
+                            navController.navigate("editLibro/$cod")
+                        }
+                    )
                 }
 
                 composable(MenuItem.CreateLibro.route) {
@@ -121,9 +119,7 @@ fun MainAppScreen() {
                     )
                 }
 
-                composable(MenuItem.Usuarios.route) {
-                    UsuarioScreen()
-                }
+                composable(MenuItem.Usuarios.route) { UsuarioScreen() }
 
                 composable(MenuItem.CreateUsuario.route) {
                     CreateUsuarioScreen(
@@ -131,8 +127,14 @@ fun MainAppScreen() {
                     )
                 }
 
-                composable(MenuItem.BuscarLibro.route) {
-                    BuscarLibroScreen()
+                composable(MenuItem.BuscarLibro.route) { BuscarLibroScreen() }
+
+                composable("editLibro/{codlibro}") { backStackEntry ->
+                    val cod = backStackEntry.arguments?.getString("codlibro") ?: ""
+                    EditLibroScreen(
+                        codLibro = cod,
+                        onNavigateBack = { navController.popBackStack() }
+                    )
                 }
             }
         }

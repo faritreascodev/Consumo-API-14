@@ -12,4 +12,5 @@ sealed class MenuItem(val route: String, val title: String, val icon: androidx.c
   object Usuarios : MenuItem("usuarios", "Usuarios", Icons.Default.People)
   object CreateUsuario : MenuItem("createUsuario", "Nuevo Usuario", Icons.Default.PersonAdd)
   object BuscarLibro : MenuItem("buscarLibro", "Buscar Libro", Icons.Default.Search)
+  object EditLibro : MenuItem("editLibro/{codlibro}", "Editar Libro", Icons.Default.Edit)
 }
