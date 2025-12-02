@@ -1,0 +1,6 @@
+node_modules/
+uploads/datos2.xlsx
+package-lock.json
+.idea/
+storage/uploads
+.env
