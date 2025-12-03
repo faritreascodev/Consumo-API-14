@@ -8,6 +8,7 @@ module.exports = app => {
   router.get("/bycode/:codlibro", libro.getByCode);
   router.delete("/delete/:codlibro", libro.deleteByCode);
   router.put("/update/:codlibro", libro.updateByCode);
+  // nueva ruta
   router.get("/getDetalle", libro.getxCodigo);
 
   app.use('/api/libros', router);
