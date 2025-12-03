@@ -107,3 +107,17 @@ exports.updateByCode = async (req, res) => {
     res.status(500).send({ status:false, message: err.message });
   }
 };
+
+exports.getxCodigo = async (req, res) => {
+    const codlibro = req.query.codlibro;
+ 
+    await Libro.findOne({ codlibro: codlibro })
+    .then(data => {
+        if(!data)
+            res.status(404).send({status:false, message: "No se encontró el libro con el código " + codlibro});
+        else res.status(200).send(data);
+    })
+    .catch(err => {
+        res.status(500).send({status:false, message: err.message});
+    });
+}
