@@ -16,6 +16,12 @@ class LibrosViewModel : ViewModel() {
     var libroList: List<Libro> by mutableStateOf(listOf())
     var errorMessage: String by mutableStateOf("")
     var isLoading: Boolean by mutableStateOf(false)
+    var selectedLibro by mutableStateOf<Libro?>(null)
+        private set
+    var isLoadingDetail by mutableStateOf(false)
+        private set
+    var detailErrorMessage by mutableStateOf<String?>(null)
+        private set
 
     // Estados para POST
     var isPosting: Boolean by mutableStateOf(false)
@@ -158,6 +164,30 @@ class LibrosViewModel : ViewModel() {
                 isUpdating = false
             }
         }
+    }
+
+    fun getLibroById(codLibro: String) {
+        viewModelScope.launch {
+            isLoadingDetail = true
+            detailErrorMessage = null
+            selectedLibro = null
+            try {
+                val libro = RetrofitClient.serviceLibros.getLibroDetalle(codLibro)
+                selectedLibro = libro
+                Log.d("LibrosViewModel", "Detalle cargado: ${libro.nombre}")
+            } catch (e: Exception) {
+                detailErrorMessage = "Error al cargar detalle: ${e.message}"
+                Log.e("LibrosViewModel", "Error detalle: ${e.message}", e)
+            } finally {
+                isLoadingDetail = false
+            }
+        }
+    }
+
+    // limpiar el detalle
+    fun clearSelection() {
+        selectedLibro = null
+        detailErrorMessage = null
     }
 
     fun resetUpdateState() {

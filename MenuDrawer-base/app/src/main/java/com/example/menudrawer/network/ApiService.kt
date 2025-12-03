@@ -1,5 +1,6 @@
 package com.example.menudrawer.network
 
+import com.example.menudrawer.model.Libro
 import com.example.menudrawer.model.User
 import com.example.menudrawer.model.LibroRequest
 import com.example.menudrawer.model.LibroResponse
@@ -36,4 +37,8 @@ interface ApiService {
 
     @GET("api/usuarios/list")
     suspend fun getUsuarios(): UsuarioResponse
+
+    @GET("api/libros/getDetalle")
+    suspend fun getLibroDetalle(@Query("codlibro") codlibro: String): Libro
 }
+

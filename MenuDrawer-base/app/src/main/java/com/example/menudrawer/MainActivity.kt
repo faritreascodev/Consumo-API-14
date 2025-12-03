@@ -21,21 +21,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.menudrawer.components.AppDrawer
 import com.example.menudrawer.model.MenuItem
-import com.example.menudrawer.screens.CreateLibroScreen
-import com.example.menudrawer.screens.CreateUsuarioScreen
-import com.example.menudrawer.screens.EditLibroScreen
-import com.example.menudrawer.screens.HomeScreen
-import com.example.menudrawer.screens.LibroScreen
-import com.example.menudrawer.screens.ProfileScreen
-import com.example.menudrawer.screens.SettingsScreen
-import com.example.menudrawer.screens.UsuarioScreen
-import com.example.menudrawer.screens.BuscarLibroScreen
+import com.example.menudrawer.screens.*
 import com.example.menudrawer.ui.theme.MenuDrawerTheme
+import com.example.menudrawer.viewmodel.LibrosViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -109,6 +105,9 @@ fun MainAppScreen() {
                     LibroScreen(
                         onEditLibro = { cod ->
                             navController.navigate("editLibro/$cod")
+                        },
+                        onLibroClick = { cod ->
+                            navController.navigate("libro_detail/$cod")
                         }
                     )
                 }
@@ -133,6 +132,21 @@ fun MainAppScreen() {
                     val cod = backStackEntry.arguments?.getString("codlibro") ?: ""
                     EditLibroScreen(
                         codLibro = cod,
+                        onNavigateBack = { navController.popBackStack() }
+                    )
+                }
+
+                // detalle del libro
+                composable(
+                    route = "libro_detail/{codlibro}",
+                    arguments = listOf(navArgument("codlibro") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val codLibro = backStackEntry.arguments?.getString("codlibro") ?: ""
+                    val viewModel: LibrosViewModel = viewModel()
+
+                    LibroDetailScreen(
+                        codLibro = codLibro,
+                        viewModel = viewModel,
                         onNavigateBack = { navController.popBackStack() }
                     )
                 }

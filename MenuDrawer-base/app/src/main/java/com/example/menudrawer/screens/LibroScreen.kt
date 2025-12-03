@@ -3,6 +3,8 @@ package com.example.menudrawer.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,7 +18,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LibroScreen(
-    onEditLibro: (cod: String) -> Unit
+    onEditLibro: (cod: String) -> Unit,
+    onLibroClick: (cod: String) -> Unit = {}
 ) {
     val librosViewModel: LibrosViewModel = viewModel()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -84,7 +87,8 @@ fun LibroScreen(
                     LibroItem(
                         libro = libro,
                         onEdit = { onEditLibro(libro.codlibro) },
-                        onDelete = { libroAEliminar = libro }
+                        onDelete = { libroAEliminar = libro },
+                        onClick = { onLibroClick(libro.codlibro) }
                     )
                 }
             }
@@ -114,17 +118,20 @@ fun LibroScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibroItem(
     libro: Libro,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        onClick = onClick
     ) {
         Column(
             modifier = Modifier
@@ -133,7 +140,8 @@ fun LibroItem(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = libro.nombre,
@@ -141,12 +149,24 @@ fun LibroItem(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                Text(
-                    text = "$${String.format("%.2f", libro.precio)}",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // icono Info
+                    IconButton(onClick = onClick) {
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = "Ver detalle",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    Text(
+                        text = "$${String.format("%.2f", libro.precio)}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Autor: ${libro.autor}")
